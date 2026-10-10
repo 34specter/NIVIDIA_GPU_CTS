@@ -4,12 +4,11 @@ project(nvidia_gpu_cts LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# CUDA installation paths
+# CUDA paths
 set(CUDA_INCLUDE_PATH "/usr/local/cuda/include")
-set(CUDA_RUNTIME_PATH "/usr/local/cuda/lib64")
-set(CUDA_DRIVER_PATH "/usr/lib/x86_64-linux-gnu")
+set(CUDA_RUNTIME_LIB  "/usr/local/cuda/lib64/libcudart.so")
+set(CUDA_DRIVER_LIB   "/usr/local/cuda-12.8/targets/x86_64-linux/lib/stubs/libcuda.so")
 
-find_package(CUDAToolkit REQUIRED)
 find_package(GTest REQUIRED)
 
 enable_testing()
@@ -23,14 +22,9 @@ target_include_directories(driver_smoke_test PRIVATE
     ${CUDA_INCLUDE_PATH}
 )
 
-target_link_directories(driver_smoke_test PRIVATE
-    ${CUDA_DRIVER_PATH}
-)
-
-target_link_libraries(driver_smoke_test
-    PRIVATE
-        cuda
-        GTest::gtest_main
+target_link_libraries(driver_smoke_test PRIVATE
+    ${CUDA_DRIVER_LIB}
+    GTest::gtest_main
 )
 
 add_executable(runtime_smoke_test
@@ -42,14 +36,9 @@ target_include_directories(runtime_smoke_test PRIVATE
     ${CUDA_INCLUDE_PATH}
 )
 
-target_link_directories(runtime_smoke_test PRIVATE
-    ${CUDA_RUNTIME_PATH}
-)
-
-target_link_libraries(runtime_smoke_test
-    PRIVATE
-        cudart
-        GTest::gtest_main
+target_link_libraries(runtime_smoke_test PRIVATE
+    ${CUDA_RUNTIME_LIB}
+    GTest::gtest_main
 )
 
 include(GoogleTest)
